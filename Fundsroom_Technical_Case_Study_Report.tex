@@ -1,0 +1,321 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+
+% --- Color Palette (Corporate Slate / Blue) ---
+\definecolor{primary}{RGB}{37, 99, 235}       % Royal Blue
+\definecolor{secondary}{RGB}{15, 23, 42}      % Slate 900
+\definecolor{accent}{RGB}{22, 163, 74}        % Emerald Green
+\definecolor{lightgray}{RGB}{248, 250, 252}   % Slate 50
+\definecolor{bordercolor}{RGB}{226, 232, 240} % Slate 200
+\definecolor{darkgray}{RGB}{71, 85, 105}     % Slate 600
+
+% --- Hyperlink Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=primary,
+    urlcolor=primary,
+    pdfauthor={Chethan Subramanyam},
+    pdftitle={FundsRoom Case Study Report - Mini ERP + CRM Operations Portal}
+}
+
+% --- Header & Footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{\textcolor{secondary}{FundsRoom Technical Evaluation}} | Mini ERP + CRM}
+\rhead{\textcolor{darkgray}{Round 1 Case Study}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Section Styling ---
+\titleformat{\section}
+  {\Large\bfseries\color{secondary}}
+  {\thesection}{1em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\large\bfseries\color{primary}}
+  {\thesubsection}{1em}{}
+
+% --- Code Listing Style ---
+\lstset{
+  backgroundcolor=\color{lightgray},
+  basicstyle=\ttfamily\footnotesize\color{secondary},
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{bordercolor},
+  keywordstyle=\color{primary}\bfseries,
+  commentstyle=\color{darkgray}\itshape,
+  stringstyle=\color{accent},
+  numbers=left,
+  numberstyle=\tiny\color{darkgray},
+  numbersep=8pt,
+  tabsize=2,
+  showstringspaces=false
+}
+
+% --- Document ---
+\begin{document}
+
+% --- Cover Page / Title Header ---
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\textcolor{secondary}{FundsRoom Technical Case Study}}}\\[0.4cm]
+    {\LARGE \textbf{\textcolor{primary}{Mini ERP + CRM Operations Portal}}}\\[0.2cm]
+    {\large Production Full-Stack Architecture \& Operational Specification}\\[1.5cm]
+    
+    \begin{tcolorbox}[colback=lightgray,colframe=primary,arc=4mm,width=0.92\textwidth]
+        \centering
+        \vspace{0.2cm}
+        \textbf{Candidate Name:} Chethan Subramanyam\\[0.15cm]
+        \textbf{Institution:} GITAM (Deemed to be University), Bengaluru\\[0.15cm]
+        \textbf{Email:} \href{mailto:chethansubramanyam@gitam.in}{chethansubramanyam@gitam.in}\\[0.15cm]
+        \textbf{Position Applied:} Full Stack Developer\\[0.15cm]
+        \textbf{Submission Date:} September 11, 2026
+        \vspace{0.2cm}
+    \end{tcolorbox}
+    
+    \vspace{1.5cm}
+    
+    \begin{tcolorbox}[colback=white,colframe=bordercolor,arc=2mm,width=0.92\textwidth,title=\textbf{\textcolor{secondary}{Quick Access Live Links}}]
+        \small
+        \begin{itemize}[leftmargin=1.5em, itemsep=0.3em]
+            \item \textbf{GitHub Repository:} \href{https://github.com/CHETHCODEX/Fundsroom-mini-ERP}{github.com/CHETHCODEX/Fundsroom-mini-ERP}
+            \item \textbf{Live Web Application:} \href{https://fundsroom-mini-erp-lyart.vercel.app}{fundsroom-mini-erp-lyart.vercel.app}
+            \item \textbf{Live Backend REST API:} \href{https://fundsroom-mini-erp-jt8x.onrender.com/api}{fundsroom-mini-erp-jt8x.onrender.com/api}
+            \item \textbf{Health Check Endpoint:} \href{https://fundsroom-mini-erp-jt8x.onrender.com/api/health}{fundsroom-mini-erp-jt8x.onrender.com/api/health}
+            \item \textbf{Screen Recording (Google Drive):} \textit{[Insert your Google Drive Video Link Here]}
+        \end{itemize}
+    \end{tcolorbox}
+    
+    \vfill
+    {\footnotesize \textcolor{darkgray}{Confidential -- Prepared exclusively for FundsRoom Talent Acquisition Team}}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% --- 1. Executive Summary ---
+\section{Executive Summary \& Business Context}
+Wholesale and distribution organizations operate in high-throughput environments where disparate departments—\textbf{Sales, Warehouse, Accounts, and Executive Management}—require synchronized visibility into customer relationships and real-time physical inventory.
+
+Without a unified Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) system, distributors face severe operational bottlenecks:
+\begin{enumerate}[itemsep=0.2em]
+    \item \textbf{Negative Stock Overselling:} Multiple sales representatives inadvertently selling the same warehouse items concurrently.
+    \item \textbf{Lost Account History:} Overwritten or untracked commercial discussions with wholesale buyers.
+    \item \textbf{Invoice Inaccuracies:} Delivery slips reflecting modified catalog prices rather than the agreed price at the moment of dispatch.
+\end{enumerate}
+
+This project delivers a complete, production-grade, full-stack Operations Portal addressing these challenges using a \textbf{Node.js / Express / TypeScript} backend, \textbf{PostgreSQL} ACID transactions with pessimistic row-locking, and a responsive \textbf{React 18 / Vite / TypeScript} frontend.
+
+---
+
+% --- 2. Architecture & Tech Stack ---
+\section{System Architecture \& Tech Stack}
+
+\subsection{Architectural Blueprint}
+The portal follows a decoupled, three-tier enterprise client-server architecture:
+
+\begin{center}
+\begin{tcolorbox}[colback=lightgray,colframe=bordercolor,arc=2mm,width=\textwidth]
+\begin{verbatim}
+[ React 18 + Vite SPA ]  <--->  HTTPS / JWT Bearer Tokens
+          |
+          v
+[ Express.js + TypeScript API ]
+   ├── Auth & RBAC Middleware (requireAuth, requireRole)
+   ├── Controllers (CRM, Inventory, Challans, Dashboard)
+   └── Connection Pool (pg Pool with TLS/SSL handling)
+          |
+          v  ACID Transactions + Row-Locking (SELECT ... FOR UPDATE)
+[ Cloud PostgreSQL Instance (Neon.tech Serverless) ]
+   ├── Relational Tables (users, customers, products, challans, etc.)
+   └── Foreign Keys + Check Constraints + Performance B-Tree Indexes
+\end{verbatim}
+\end{tcolorbox}
+\end{center}
+
+\subsection{Technology Matrix}
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Purpose \& Justification} \\
+\midrule
+\textbf{Frontend} & React 18, TypeScript, Vite & High-performance single page app with type safety and sub-second HMR. \\
+\textbf{Styling} & Custom CSS Design System & Clean, responsive admin layout without heavyweight CSS framework overhead. \\
+\textbf{Backend} & Node.js 22, Express, TypeScript & Asynchronous, non-blocking REST API with strict type contracts. \\
+\textbf{Database} & PostgreSQL 18 (Neon Serverless) & ACID compliance, row-level locking, and rich relational constraints. \\
+\textbf{Security} & JWT, BCrypt.js & Stateless 8-hour session authorization with salted password hashing. \\
+\textbf{Deployment} & Vercel (UI) \& Render (API) & Zero-downtime global edge distribution and automated CI/CD builds. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+---
+
+% --- 3. Core Functional Modules ---
+\section{Core Functional Modules}
+
+\subsection{Authentication \& Role-Based Access Control (RBAC)}
+The system defines four discrete employee personas, enforced at both the client route guards and backend API endpoints:
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{Admin:} Unrestricted administrative control across CRM, inventory catalogs, Challans, and personnel.
+    \item \textbf{Sales:} Management of customer accounts, follow-up timeline entries, and draft/confirmed sales challan generation.
+    \item \textbf{Warehouse:} Real-time physical inventory monitoring, storage rack tracking, and manual stock movements (\texttt{IN}/\texttt{OUT}).
+    \item \textbf{Accounts:} Read-only auditing of delivery challans, gross revenue summaries, and printable dispatch slips.
+\end{itemize}
+
+\subsection{Customer CRM Module}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{Customer Master:} Tracks firm name, contact person, mobile, email, GSTIN, customer type (\textit{Retail, Wholesale, Distributor}), dispatch address, and pipeline status (\textit{Lead, Active, Inactive}).
+    \item \textbf{Append-Only Follow-Up Timeline:} Rather than overwriting notes, sales representatives log interactions into an immutable timeline, attributing notes to the authenticated author with exact timestamps.
+    \item \textbf{Search \& Pagination:} Dynamic multi-field database indexing over business names, phone numbers, and contact names.
+\end{itemize}
+
+\subsection{Product Catalog \& Inventory Module}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{Inventory Tracking:} Tracks SKU codes, categories, unit prices, storage bays (\textit{e.g., Bay A-1, Rack 03}), on-hand stock, and minimum stock alerts.
+    \item \textbf{Low-Stock Threshold Engine:} Dynamic visual warnings for products falling below safety thresholds.
+    \item \textbf{Stock Movement Audit Log:} Mandatory audit logging for every inventory adjustment, recording movement type (\texttt{IN}/\texttt{OUT}), quantity, reason, and employee ID.
+\end{itemize}
+
+\subsection{Sales Challan Engine}
+Enables sales personnel to select a customer, assemble multi-item product rows, calculate live subtotals, and either:
+\begin{enumerate}[itemsep=0.2em]
+    \item \textbf{Save as Draft:} Records intent without altering warehouse inventory.
+    \item \textbf{Confirm Challan:} Triggers atomic stock deductions and generates an immutable delivery slip.
+\end{enumerate}
+
+---
+
+% --- 4. Deep-Dive: Concurrency & Pessimistic Locking ---
+\section{Critical Engineering: Concurrency \& Stock Deduction}
+
+\subsection{The Problem: Race Conditions \& Negative Stock}
+In high-volume wholesale operations, concurrent checkouts for high-demand goods pose severe integrity risks. If two sales representatives simultaneously confirm orders for an item with only 5 units in stock (ordering 4 and 3 units respectively), naive architectures read the stock concurrently, approve both orders, and leave inventory at $-2$.
+
+\subsection{The Solution: Pessimistic Row-Locking (\texttt{SELECT ... FOR UPDATE})}
+The delivery challan confirmation engine guarantees absolute stock integrity through strict database transactions:
+
+\begin{lstlisting}[language=SQL, caption={Pessimistic Row-Locking Stock Deduction Transaction}]
+BEGIN;
+
+-- 1. Lock rows ordered by primary key to prevent distributed deadlocks
+SELECT id, name, sku, unit_price, current_stock 
+FROM products 
+WHERE id = ANY($1::int[]) 
+ORDER BY id ASC 
+FOR UPDATE;
+
+-- 2. Verify stock sufficiency inside the locked transaction state
+-- IF current_stock < requested_quantity:
+--    ROLLBACK;
+--    RETURN HTTP 400 Bad Request ("INSUFFICIENT_STOCK");
+
+-- 3. Deduct stock safely
+UPDATE products 
+SET current_stock = current_stock - $qty, updated_at = CURRENT_TIMESTAMP 
+WHERE id = $productId;
+
+-- 4. Record stock movement audit entry
+INSERT INTO stock_movements (product_id, quantity_changed, movement_type, reason, created_by)
+VALUES ($productId, $qty, 'OUT', 'Sales Challan ' || $challanNumber, $userId);
+
+-- 5. Commit atomic transaction
+COMMIT;
+\end{lstlisting}
+
+\subsection{Snapshot Integrity}
+To prevent historical accounting distortions when product catalog prices change, \texttt{challan\_items} stores an immutable snapshot of \texttt{product\_name}, \texttt{product\_sku}, and \texttt{unit\_price} at the exact millisecond of sale.
+
+---
+
+% --- 5. Test Credentials & RBAC Matrix ---
+\section{Evaluation Test Accounts \& Access Matrix}
+
+\subsection{Pre-Seeded Test Credentials}
+All default test accounts are pre-seeded with the password: \textbf{\texttt{password123}}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{Role} & \textbf{Email Address} & \textbf{Password} & \textbf{Operational Scope} \\
+\midrule
+\textbf{Admin} & \texttt{admin@fundsroom.com} & \texttt{password123} & Unrestricted superuser access across all modules. \\
+\textbf{Sales} & \texttt{sales@fundsroom.com} & \texttt{password123} & Customer CRM, follow-up timeline, Challan creation. \\
+\textbf{Warehouse} & \texttt{warehouse@fundsroom.com} & \texttt{password123} & Catalog items, warehouse racks, stock adjustments. \\
+\textbf{Accounts} & \texttt{accounts@fundsroom.com} & \texttt{password123} & Financial delivery slip review, revenue auditing. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Granular Access Matrix}
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{X c c c c}
+\toprule
+\textbf{Capability / Route} & \textbf{Admin} & \textbf{Sales} & \textbf{Warehouse} & \textbf{Accounts} \\
+\midrule
+View Operational Dashboard & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} \\
+View Customer Directory & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & View Only & View Only \\
+Create / Edit Customer & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & No & No \\
+Append Follow-Up Call Notes & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & No & No \\
+View Inventory Levels & \textcolor{accent}{\textbf{Yes}} & View Only & \textcolor{accent}{\textbf{Yes}} & View Only \\
+Add Product / Adjust Stock & \textcolor{accent}{\textbf{Yes}} & No & \textcolor{accent}{\textbf{Yes}} & No \\
+View Stock Movement Audit & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} \\
+Create Sales Challans & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & No & No \\
+Confirm Challan (Deduct Stock) & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & No & No \\
+View Printable Delivery Slips & \textcolor{accent}{\textbf{Yes}} & \textcolor{accent}{\textbf{Yes}} & View Only & \textcolor{accent}{\textbf{Yes}} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+---
+
+% --- 6. Postman API Test Suite ---
+\section{Postman Collection \& Verification Plan}
+The root repository includes a Postman v2.1 test collection (\texttt{postman\_collection.json}) covering all 17 REST API endpoints:
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{Automated Authentication:} Running any login endpoint captures the JWT bearer token into collection variables automatically.
+    \item \textbf{CRM \& Product Flows:} Creation, query filters, and follow-up timeline submissions.
+    \item \textbf{Transaction Success Verification:} Creating a confirmed challan verifies HTTP 201 status and immediate stock deduction.
+    \item \textbf{Transaction Insufficient Stock Verification:} Submitting a challan with quantity $999{,}999$ returns HTTP 400 Bad Request (\texttt{INSUFFICIENT\_STOCK}), confirming database rollback.
+\end{itemize}
+
+---
+
+% --- 7. Known Limitations & Future Roadmap ---
+\section{Known Limitations \& Future Roadmap}
+\begin{enumerate}[itemsep=0.3em]
+    \item \textbf{Automated Tax Calculations:} The current challan engine calculates gross item totals. A production enhancement would compute split CGST/SGST (intra-state) or IGST (inter-state) based on customer state codes.
+    \item \textbf{Purchase Order Ingest:} While stock adjustments allow manual inward entries, an automated Purchase Order to Goods Receipt Note (GRN) pipeline would streamline supplier intake.
+    \item \textbf{Server-Side PDF Generation:} Challan printing currently utilizes browser rendering (\texttt{window.print()}); headless Puppeteer integration can generate downloadable binary PDFs for automated emailing.
+\end{enumerate}
+
+---
+
+% --- 8. Conclusion ---
+\section{Conclusion}
+The FundsRoom Mini ERP + CRM Operations Portal demonstrates a complete, production-ready full-stack application built to enterprise standards. It features clean architectural layering, role-based security, responsive design, and transactional database integrity capable of preventing race conditions in high-concurrency environments.
+
+\end{document}
