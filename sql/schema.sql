@@ -120,10 +120,10 @@ CREATE INDEX idx_challan_items_challan ON challan_items(challan_id);
 -- ============================================================================
 
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-(1, 'Admin User', 'admin@fundsroom.com', '$2a$10$gM0P.x8P90Nzg3sU8b5QCeH5Fw18j7O057yFjP6Vl4yJ5Vq8sPZea', 'Admin'),
-(2, 'Sarah Sales', 'sales@fundsroom.com', '$2a$10$gM0P.x8P90Nzg3sU8b5QCeH5Fw18j7O057yFjP6Vl4yJ5Vq8sPZea', 'Sales'),
-(3, 'Warren Warehouse', 'warehouse@fundsroom.com', '$2a$10$gM0P.x8P90Nzg3sU8b5QCeH5Fw18j7O057yFjP6Vl4yJ5Vq8sPZea', 'Warehouse'),
-(4, 'Alex Accounts', 'accounts@fundsroom.com', '$2a$10$gM0P.x8P90Nzg3sU8b5QCeH5Fw18j7O057yFjP6Vl4yJ5Vq8sPZea', 'Accounts');
+(1, 'Admin User', 'admin@fundsroom.com', '$2a$10$SyC14qCHmMWL5vhPEsxO/Oj5H4mc/WPy/Ff2h3q5Rrow7ZQ1oLQgS', 'Admin'),
+(2, 'Sarah Sales', 'sales@fundsroom.com', '$2a$10$SyC14qCHmMWL5vhPEsxO/Oj5H4mc/WPy/Ff2h3q5Rrow7ZQ1oLQgS', 'Sales'),
+(3, 'Warren Warehouse', 'warehouse@fundsroom.com', '$2a$10$SyC14qCHmMWL5vhPEsxO/Oj5H4mc/WPy/Ff2h3q5Rrow7ZQ1oLQgS', 'Warehouse'),
+(4, 'Alex Accounts', 'accounts@fundsroom.com', '$2a$10$SyC14qCHmMWL5vhPEsxO/Oj5H4mc/WPy/Ff2h3q5Rrow7ZQ1oLQgS', 'Accounts');
 
 -- Sync user sequence
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
