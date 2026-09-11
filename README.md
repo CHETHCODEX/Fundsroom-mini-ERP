@@ -4,6 +4,16 @@ A production-grade, full-stack Mini ERP and CRM Operations Portal designed for w
 
 ---
 
+## 🌐 Live Production Deployments
+
+- 🖥️ **Live Web Application (Frontend)**: [https://fundsroom-mini-erp-lyart.vercel.app](https://fundsroom-mini-erp-lyart.vercel.app)
+- ⚙️ **Live REST API (Backend)**: [https://fundsroom-mini-erp-jt8x.onrender.com/api](https://fundsroom-mini-erp-jt8x.onrender.com/api)
+- 🩺 **API Health Check**: [https://fundsroom-mini-erp-jt8x.onrender.com/api/health](https://fundsroom-mini-erp-jt8x.onrender.com/api/health)
+- 📦 **GitHub Repository**: [https://github.com/CHETHCODEX/Fundsroom-mini-ERP](https://github.com/CHETHCODEX/Fundsroom-mini-ERP)
+- 🗄️ **Database**: Cloud PostgreSQL on Neon.tech (Serverless)
+
+---
+
 ## 🏗️ Architecture Overview
 
 ```
